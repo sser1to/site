@@ -161,6 +161,7 @@
     <!-- Лайтбокс -->
     <div
       v-if="lightboxOpen"
+      v-cloak
       class="lightbox"
       @click.self="closeLightbox"
       @wheel="onLightboxWheel"

@@ -86,6 +86,16 @@ body {
 
 .hero-left {
   flex-shrink: 0;
+  position: relative;
+}
+
+.hero-left::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 3px solid var(--accent);
+  pointer-events: none;
 }
 
 .photo-circle {
@@ -218,6 +228,18 @@ body {
   height: 3px;
   background: linear-gradient(90deg, var(--accent), transparent);
   margin-bottom: 40px;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.reveal-visible .section-divider {
+  animation: draw-section-line 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: 0.5s;
+}
+
+@keyframes draw-section-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 .section-text-block {
@@ -379,6 +401,10 @@ body {
 }
 
 /* ===== LIGHTBOX ===== */
+[v-cloak] {
+  display: none;
+}
+
 .lightbox {
   position: fixed;
   inset: 0;
