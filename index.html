@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Никита Лецколюк — Портфолио</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Секция 1: Hero -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="photo-circle">
+          <img src="src/img/my_photo.png" alt="Никита Лецколюк" class="photo-img">
+        </div>
+      </div>
+      <div class="hero-right">
+        <h1 class="hero-title">Привет!</h1>
+        <p class="hero-text">
+          Меня зовут Никита, мне 21 год, увлекаюсь
+          <a href="#programmer" class="highlight">программированием</a>,
+          <a href="#designer" class="highlight">веб-дизайном</a> и
+          <a href="#analyst" class="highlight">аналитикой</a>.
+        </p>
+        <div class="divider"></div>
+        <p class="hero-quote">
+          "Шансы на успех есть всегда - моя задача превратить их в результат."
+        </p>
+        <div class="divider"></div>
+        <a href="#programmer" class="learn-more">
+          Узнать больше
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Секция 2: Программист -->
+    <section id="programmer" class="section">
+      <h2 class="section-title">Я - программист</h2>
+      <div class="section-divider"></div>
+      <div class="section-text-block">
+        <p>
+          Имею практический опыт участия с разработке информационных систем,
+          программного обеспечения и сервисов. Более 2-х лет участвую в IT-хакатонах, во
+          время которых применял на себе роли DevOps, backend-разработчика. Пишу код на
+          C# и Python.
+        </p>
+      </div>
+      <div class="tech-icons">
+        <div class="tech-icon" title="PostgreSQL">
+          <img src="src/img/posgresql.svg" alt="PostgreSQL">
+        </div>
+        <div class="tech-icon" title="Docker">
+          <img src="src/img/docker.svg" alt="Docker">
+        </div>
+        <div class="tech-icon" title="C#">
+          <img src="src/img/csharp.svg" alt="C#">
+        </div>
+        <div class="tech-icon" title="Python">
+          <img src="src/img/python.svg" alt="Python">
+        </div>
+        <div class="tech-icon" title="Vue.js">
+          <img src="src/img/vue.svg" alt="Vue.js">
+        </div>
+      </div>
+      <p class="github-link">Все мои проекты можно посмотреть на <a href="https://github.com/sser1to" target="_blank">Github</a></p>
+    </section>
+
+    <!-- Секция 3: Веб-дизайнер -->
+    <section id="designer" class="section section-alt">
+      <h2 class="section-title">Я - веб-дизайнер</h2>
+      <div class="section-divider"></div>
+      <div class="section-text-block">
+        <p>
+          Во всех своих проектах и во время хакатонов полностью с нуля создаю макеты для веб-
+          интерфейсов. Примеры представлены ниже.
+        </p>
+      </div>
+      <div class="carousel">
+        <div class="carousel-frame">
+          <div class="carousel-viewport" @pointerdown="onPointerDown" @pointerup="onPointerUp">
+            <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
+              <div class="carousel-slide" v-for="(slide, i) in slides" :key="i">
+                <img :src="slide.src" :alt="`Дизайн ${i + 1}`" class="slide-photo" @click="openLightbox(slide.src)">
+              </div>
+            </div>
+            <button class="carousel-btn carousel-btn-left" @click="prevSlide" aria-label="Предыдущий слайд">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+            <button class="carousel-btn carousel-btn-right" @click="nextSlide" aria-label="Следующий слайд">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="carousel-dots">
+          <button
+            v-for="(slide, i) in slides"
+            :key="'dot-' + i"
+            class="carousel-dot"
+            :class="{ active: i === currentSlide }"
+            @click="currentSlide = i"
+            :aria-label="`Слайд ${i + 1}`"
+          ></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Секция 4: Системный аналитик -->
+    <section id="analyst" class="section">
+      <h2 class="section-title">Я - аналитик</h2>
+      <div class="section-divider"></div>
+      <div class="section-text-block">
+        <p>
+          Имею опыт анализа и формализации требований, взаимодействия с разработчиками и
+          заказчиками, описания функциональности системы и моделирования бизнес-логики.
+          Владею UML и умею разрабатывать диаграммы Use Case, Sequence, Activity, Class и
+          Component для описания архитектуры и процессов системы, а также ER-диаграммы.
+        </p>
+      </div>
+    </section>
+
+    <!-- Секция 5: Футер -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <h3 class="footer-name">Лецколюк<br>Никита<br>Максимович</h3>
+          <p class="footer-copy">© 2026</p>
+        </div>
+        <div class="footer-right">
+          <h4 class="footer-contacts-title">Мои контакты</h4>
+          <div class="footer-contact">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12C24 5.37 18.63 0 12 0zm5.95 7.47l-1.95 9.18c-.15.67-.54.83-1.09.52l-3.01-2.21-1.45 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.22-.05-.33-.37-.14l-6.87 4.32-2.96-.92c-.64-.2-.65-.64.14-.95l11.56-4.46c.54-.2 1.01.13.83.95z"/>
+            </svg>
+            <a href="https://t.me/sser1to" target="_blank">@sser1to</a>
+          </div>
+          <div class="footer-contact">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            <a href="mailto:nikitaletskolyuk@gmail.com">nikitaletskolyuk@gmail.com</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-watermark">
+        <span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span><span>sser1to</span>
+      </div>
+    </footer>
+
+    <!-- Лайтбокс -->
+    <div
+      v-if="lightboxOpen"
+      class="lightbox"
+      @click.self="closeLightbox"
+      @wheel="onLightboxWheel"
+      @pointerdown="onLightboxPointerDown"
+      @pointermove="onLightboxPointerMove"
+      @pointerup="onLightboxPointerUp"
+      @pointercancel="onLightboxPointerUp"
+    >
+      <img
+        :src="lightboxSrc"
+        alt="Просмотр дизайна"
+        class="lightbox-img"
+        :class="{ 'no-transition': lightboxDragging }"
+        :style="{ transform: `translate(${lightboxX}px, ${lightboxY}px) scale(${lightboxScale})` }"
+        draggable="false"
+      >
+      <button class="lightbox-close" @click="closeLightbox" aria-label="Закрыть">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
