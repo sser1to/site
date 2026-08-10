@@ -492,6 +492,43 @@ html.dark .theme-toggle .icon-moon {
   display: block;
 }
 
+/* ===== SCROLL PROGRESS ===== */
+.scroll-progress {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 900;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--progress, 0deg), rgba(107, 92, 231, 0.2) 0deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-progress::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+.scroll-progress-text {
+  position: relative;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+body.lightbox-open .scroll-progress,
+body.lightbox-open .theme-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ===== REVEAL ON SCROLL ===== */
 .reveal {
   opacity: 0;

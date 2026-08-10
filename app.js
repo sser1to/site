@@ -73,17 +73,22 @@ createApp({
       lightboxY.value = 0;
       lightboxOpen.value = true;
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.classList.add('lightbox-open');
     }
 
     function closeLightbox() {
       lightboxOpen.value = false;
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.classList.remove('lightbox-open');
       activePointers.clear();
       lightboxDragging.value = false;
     }
 
     function onLightboxWheel(e) {
       if (!lightboxOpen.value) return;
+      e.preventDefault();
       const factor = e.deltaY > 0 ? 0.9 : 1.1;
       lightboxScale.value = clamp(lightboxScale.value * factor, 0.5, 5);
     }
@@ -198,6 +203,26 @@ revealElements.forEach((el) => {
 
 const themeToggle = document.getElementById('theme-toggle');
 const rootEl = document.documentElement;
+
+const scrollProgress = document.getElementById('scroll-progress');
+const scrollProgressText = document.querySelector('.scroll-progress-text');
+
+let maxScrollPct = 0;
+
+function updateScrollProgress() {
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? clamp(Math.round((window.scrollY / max) * 100), 0, 100) : 0;
+  if (pct > maxScrollPct) {
+    maxScrollPct = pct;
+  }
+  scrollProgressText.textContent = maxScrollPct + '%';
+  scrollProgress.style.setProperty('--progress', maxScrollPct * 3.6 + 'deg');
+}
+
+window.addEventListener('scroll', updateScrollProgress, { passive: true });
+window.addEventListener('resize', updateScrollProgress);
+updateScrollProgress();
 
 if (themeToggle) {
   if (localStorage.getItem('theme') === 'dark') {
