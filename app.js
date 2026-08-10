@@ -1,5 +1,10 @@
 const { createApp, ref, onMounted, onUnmounted } = Vue;
 
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
 }
@@ -196,10 +201,28 @@ const revealObserver = new IntersectionObserver(
   { threshold: 0.15 }
 );
 
-revealElements.forEach((el) => {
-  el.classList.add('reveal');
-  revealObserver.observe(el);
-});
+function startReveals() {
+  revealElements.forEach((el) => {
+    el.classList.add('reveal');
+    revealObserver.observe(el);
+  });
+}
+
+const preloader = document.getElementById('preloader');
+
+if (preloader) {
+  document.documentElement.classList.add('preloading');
+  document.body.classList.add('preloading');
+  setTimeout(() => {
+    preloader.classList.add('preloader-hidden');
+    preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+    document.documentElement.classList.remove('preloading');
+    document.body.classList.remove('preloading');
+    startReveals();
+  }, 3000);
+} else {
+  startReveals();
+}
 
 const themeToggle = document.getElementById('theme-toggle');
 const rootEl = document.documentElement;
