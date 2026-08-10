@@ -358,6 +358,91 @@ html.preloading body {
   text-decoration: underline;
 }
 
+/* ===== EDUCATION TIMELINE ===== */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  padding-left: 24px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 32px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent), var(--accent) 60%, var(--divider));
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 56px;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.timeline-period {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: var(--frame-bg);
+  border: 1px solid var(--frame-border);
+  border-radius: 999px;
+  padding: 6px 16px;
+  margin-bottom: 14px;
+}
+
+.timeline-place {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.timeline-desc {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.timeline-specialty {
+  margin-top: 4px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.timeline-badge {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 5px 14px;
+}
+
 /* ===== CAROUSEL ===== */
 .carousel {
   max-width: 800px;
@@ -823,6 +908,22 @@ body.lightbox-open .theme-toggle {
   }
 
   .github-link {
+    font-size: 16px;
+  }
+
+  .timeline {
+    padding-left: 20px;
+  }
+
+  .timeline::before {
+    left: 28px;
+  }
+
+  .timeline-item {
+    gap: 16px;
+  }
+
+  .timeline-desc {
     font-size: 16px;
   }
 
