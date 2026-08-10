@@ -195,3 +195,17 @@ revealElements.forEach((el) => {
   el.classList.add('reveal');
   revealObserver.observe(el);
 });
+
+const themeToggle = document.getElementById('theme-toggle');
+const rootEl = document.documentElement;
+
+if (themeToggle) {
+  if (localStorage.getItem('theme') === 'dark') {
+    rootEl.classList.add('dark');
+  }
+
+  themeToggle.addEventListener('click', () => {
+    rootEl.classList.toggle('dark');
+    localStorage.setItem('theme', rootEl.classList.contains('dark') ? 'dark' : 'light');
+  });
+}
