@@ -228,6 +228,27 @@
       </button>
     </div>
 
+    <!-- Модальное окно Telegram -->
+    <transition name="ad">
+      <div v-if="adVisible" class="ad-wrap">
+        <div class="ad-card">
+          <button class="ad-close" @click="closeAd" aria-label="Закрыть">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <p class="ad-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12C24 5.37 18.63 0 12 0zm5.95 7.47l-1.95 9.18c-.15.67-.54.83-1.09.52l-3.01-2.21-1.45 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.22-.05-.33-.37-.14l-6.87 4.32-2.96-.92c-.64-.2-.65-.64.14-.95l11.56-4.46c.54-.2 1.01.13.83.95z"/>
+            </svg>
+            У меня есть личный тгк канал
+          </p>
+          <div ref="adWidgetHost" class="ad-widget-host"></div>
+          <a v-if="!adWidgetCreated" class="ad-fallback" href="https://t.me/sser1tohub" target="_blank" rel="noopener">t.me/sser1tohub</a>
+        </div>
+      </div>
+    </transition>
+
   </div>
 
   <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">

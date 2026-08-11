@@ -1,9 +1,11 @@
-const { createApp, ref, onMounted, onUnmounted } = Vue;
+const { createApp, ref, watch, onMounted, onUnmounted } = Vue;
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
 window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+let showAdModal = () => {};
 
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
@@ -150,14 +152,63 @@ createApp({
       }
     }
 
+    // ===== Telegram ad modal =====
+    const adVisible = ref(false);
+    const adWidgetHost = ref(null);
+    const adWidgetCreated = ref(false);
+    let adWidgetScriptAdded = false;
+    let adWidgetPending = false;
+
+    function loadTelegramWidget() {
+      if (adWidgetScriptAdded) return;
+      adWidgetScriptAdded = true;
+      const script = document.createElement('script');
+      script.src = 'https://telegram.org/js/telegram-widget.js?24';
+      script.async = true;
+      script.onload = () => {
+        if (adWidgetPending) {
+          createAdWidget();
+        }
+      };
+      document.head.appendChild(script);
+    }
+
+    function createAdWidget() {
+      if (adWidgetCreated.value || !window.TelegramWidget || !adWidgetHost.value) return;
+      window.TelegramWidget.createPost(adWidgetHost.value, 'sser1tohub/1', {
+        width: '100%',
+        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      });
+      adWidgetCreated.value = true;
+      adWidgetPending = false;
+    }
+
+    function closeAd() {
+      adVisible.value = false;
+    }
+
+    watch(adVisible, (val) => {
+      if (!val) return;
+      if (window.TelegramWidget) {
+        createAdWidget();
+      } else {
+        adWidgetPending = true;
+      }
+    }, { flush: 'post' });
+
     function onKeydown(e) {
-      if (e.key === 'Escape' && lightboxOpen.value) {
+      if (e.key !== 'Escape') return;
+      if (adVisible.value) {
+        closeAd();
+      } else if (lightboxOpen.value) {
         closeLightbox();
       }
     }
 
     onMounted(() => {
+      showAdModal = () => { adVisible.value = true; };
       window.addEventListener('keydown', onKeydown);
+      loadTelegramWidget();
     });
 
     onUnmounted(() => {
@@ -182,7 +233,11 @@ createApp({
       onLightboxWheel,
       onLightboxPointerDown,
       onLightboxPointerMove,
-      onLightboxPointerUp
+      onLightboxPointerUp,
+      adVisible,
+      adWidgetHost,
+      adWidgetCreated,
+      closeAd
     };
   }
 }).mount('#app');
@@ -219,9 +274,11 @@ if (preloader) {
     document.documentElement.classList.remove('preloading');
     document.body.classList.remove('preloading');
     startReveals();
+    setTimeout(showAdModal, 3000);
   }, 3000);
 } else {
   startReveals();
+  setTimeout(showAdModal, 3000);
 }
 
 const themeToggle = document.getElementById('theme-toggle');
