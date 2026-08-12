@@ -1,4 +1,4 @@
-const { createApp, ref, watch, onMounted, onUnmounted } = Vue;
+const { createApp, ref, computed, watch, onMounted, onUnmounted, nextTick } = Vue;
 
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
@@ -152,6 +152,97 @@ createApp({
       }
     }
 
+    // ===== Music player =====
+    const tracks = ref([
+      { src: 'src/audio/in the rain.mp3', title: 'in the rain' },
+      { src: 'src/audio/r4m4mb4r.mp3', title: 'r4m4mb4r' },
+      { src: 'src/audio/i miss you.mp3', title: 'i miss you' }
+    ]);
+
+    const currentTrackIndex = ref(0);
+    const isPlaying = ref(false);
+    const currentTime = ref(0);
+    const duration = ref(0);
+    const audioEl = ref(null);
+
+    const currentTrack = computed(() => tracks.value[currentTrackIndex.value]);
+
+    const progressPct = computed(() => {
+      if (!duration.value) return 0;
+      return clamp((currentTime.value / duration.value) * 100, 0, 100);
+    });
+
+    function formatTime(sec) {
+      if (!isFinite(sec) || sec < 0) sec = 0;
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePlay() {
+      const el = audioEl.value;
+      if (!el) return;
+      if (el.paused) {
+        el.play().catch(() => {});
+      } else {
+        el.pause();
+      }
+    }
+
+    function selectTrack(i) {
+      if (i === currentTrackIndex.value) {
+        togglePlay();
+        return;
+      }
+      currentTrackIndex.value = i;
+      currentTime.value = 0;
+      duration.value = 0;
+      isPlaying.value = false;
+      nextTick(() => {
+        const el = audioEl.value;
+        if (!el) return;
+        el.load();
+        el.play().catch(() => {});
+      });
+    }
+
+    function nextTrack() {
+      selectTrack((currentTrackIndex.value + 1) % tracks.value.length);
+    }
+
+    function prevTrack() {
+      selectTrack((currentTrackIndex.value - 1 + tracks.value.length) % tracks.value.length);
+    }
+
+    function onLoadedMetadata(e) {
+      duration.value = e.target.duration;
+    }
+
+    function onTimeUpdate(e) {
+      currentTime.value = e.target.currentTime;
+    }
+
+    function onProgressDown(e) {
+      const el = audioEl.value;
+      if (!el || !duration.value) return;
+      const bar = e.currentTarget;
+      const seek = (ev) => {
+        const rect = bar.getBoundingClientRect();
+        const ratio = clamp((ev.clientX - rect.left) / rect.width, 0, 1);
+        const t = ratio * (el.duration || 0);
+        el.currentTime = t;
+        currentTime.value = t;
+      };
+      seek(e);
+      const moveHandler = (ev) => seek(ev);
+      const upHandler = () => {
+        window.removeEventListener('pointermove', moveHandler);
+        window.removeEventListener('pointerup', upHandler);
+      };
+      window.addEventListener('pointermove', moveHandler);
+      window.addEventListener('pointerup', upHandler);
+    }
+
     // ===== Telegram ad modal =====
     const adVisible = ref(false);
     const adWidgetHost = ref(null);
@@ -237,7 +328,23 @@ createApp({
       adVisible,
       adWidgetHost,
       adWidgetCreated,
-      closeAd
+      closeAd,
+      tracks,
+      currentTrackIndex,
+      currentTrack,
+      isPlaying,
+      currentTime,
+      duration,
+      audioEl,
+      progressPct,
+      formatTime,
+      togglePlay,
+      selectTrack,
+      nextTrack,
+      prevTrack,
+      onLoadedMetadata,
+      onTimeUpdate,
+      onProgressDown
     };
   }
 }).mount('#app');

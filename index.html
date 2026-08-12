@@ -170,7 +170,97 @@
       </div>
     </section>
 
-    <!-- Секция 6: Футер -->
+    <!-- Секция 6: Музыка -->
+    <section id="music" class="section">
+      <h2 class="section-title">Я - битмейкер</h2>
+      <div class="section-divider"></div>
+      <div class="section-text-block">
+        <p>
+          Когда-то я увлекался созданием музыки. Ниже вы можете послушать несколько хороших примеров.
+        </p>
+      </div>
+      <div class="player" v-cloak>
+        <div class="player-card">
+          <div class="player-visual">
+            <div class="player-disc" :class="{ spinning: isPlaying }">
+              <span class="player-disc-inner">
+                <span class="player-disc-hole"></span>
+              </span>
+            </div>
+          </div>
+          <div class="player-body">
+            <div class="player-now">
+              <span class="player-now-label">Сейчас играет</span>
+              <transition name="track-fade" mode="out-in">
+                <h3 class="player-title" :key="currentTrackIndex">{{ currentTrack.title }}</h3>
+              </transition>
+              <div class="player-eq" :class="{ muted: !isPlaying }">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+
+            <audio
+              ref="audioEl"
+              :src="currentTrack.src"
+              preload="metadata"
+              @loadedmetadata="onLoadedMetadata"
+              @timeupdate="onTimeUpdate"
+              @play="isPlaying = true"
+              @pause="isPlaying = false"
+              @ended="nextTrack"
+            ></audio>
+
+            <div class="player-progress" @pointerdown="onProgressDown">
+              <div class="player-progress-fill" :style="{ width: progressPct + '%' }"></div>
+              <div class="player-progress-knob" :style="{ left: progressPct + '%' }"></div>
+            </div>
+            <div class="player-times">
+              <span>{{ formatTime(currentTime) }}</span>
+              <span>{{ formatTime(duration) }}</span>
+            </div>
+
+            <div class="player-controls">
+              <button class="player-btn" @click="prevTrack" aria-label="Предыдущий трек">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                </svg>
+              </button>
+              <button class="player-btn player-btn-play" @click="togglePlay" aria-label="Воспроизвести или поставить на паузу">
+                <svg v-if="!isPlaying" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg v-else width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
+                </svg>
+              </button>
+              <button class="player-btn" @click="nextTrack" aria-label="Следующий трек">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="player-tracklist">
+          <button
+            v-for="(track, i) in tracks"
+            :key="i"
+            class="track-item"
+            :class="{ active: i === currentTrackIndex, playing: i === currentTrackIndex && isPlaying }"
+            @click="selectTrack(i)"
+          >
+            <span class="track-item-num">{{ i + 1 }}</span>
+            <span class="track-item-title">{{ track.title }}</span>
+            <span class="track-item-eq">
+              <span></span><span></span><span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Секция 7: Футер -->
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-left">
