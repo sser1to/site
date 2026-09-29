@@ -348,6 +348,10 @@ html.preloading body {
   color: var(--muted);
 }
 
+#designer .github-link {
+  margin-top: 32px;
+}
+
 .github-link a {
   color: var(--accent);
   text-decoration: none;
