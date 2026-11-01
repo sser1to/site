@@ -354,6 +354,63 @@
       </div>
     </transition>
 
+    <!-- Пасхалка 54 -->
+    <div v-if="easter54Visible" v-cloak class="easter54">54</div>
+
+    <!-- Терминал -->
+    <button
+      v-cloak
+      class="term-btn"
+      @click="openTerminal"
+      :aria-label="t('termOpen')"
+    >&gt;_</button>
+
+    <div
+      v-if="terminalOpen"
+      v-cloak
+      class="terminal"
+      @click.self="closeTerminal"
+    >
+      <div class="terminal-card">
+        <div class="terminal-head">
+          <span class="terminal-title">sser1to — console</span>
+          <button class="terminal-close" @click="closeTerminal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div v-if="!runOpen" class="terminal-log" ref="termLogEl">
+          <div
+            v-for="(line, i) in termLog"
+            :key="i"
+            class="terminal-line"
+            :class="'t-' + line.type"
+          >{{ line.text }}</div>
+        </div>
+        <div v-else class="terminal-game">
+          <canvas ref="runCanvasEl" class="run-canvas" @pointerdown.prevent="runJump"></canvas>
+          <div class="terminal-game-hint">
+            <span class="hint-keys">space / &uarr; / w — jump &nbsp;·&nbsp; q — quit</span>
+            <span class="hint-touch">tap — jump</span>
+          </div>
+        </div>
+        <form class="terminal-input-row" @submit.prevent="runCommand">
+          <span class="terminal-prompt">&#10095;</span>
+          <input
+            ref="termInputEl"
+            v-model="termInput"
+            class="terminal-input"
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            @keydown.up.prevent="termHistoryUp"
+            @keydown.down.prevent="termHistoryDown"
+          >
+        </form>
+      </div>
+    </div>
+
   </div>
 
   <button id="lang-toggle" class="lang-toggle" aria-label="Switch language">

@@ -29,6 +29,7 @@ const TRANSLATIONS = {
     themeAria: 'Переключить тему',
     progressAria: 'Прогресс чтения страницы',
     langAria: 'Переключить язык',
+    termOpen: 'Открыть консоль',
     photoAlt: 'Никита Лецколюк',
     heroKicker: '/ код · дизайн · аналитика · музыка',
     heroTitle: 'Привет!',
@@ -78,6 +79,7 @@ const TRANSLATIONS = {
     themeAria: 'Toggle theme',
     progressAria: 'Page reading progress',
     langAria: 'Switch language',
+    termOpen: 'Open console',
     photoAlt: 'Nikita Letskolyuk',
     heroKicker: '/ code · design · analytics · beats',
     heroTitle: 'Hi there!',
@@ -381,6 +383,544 @@ createApp({
       window.addEventListener('pointerup', upHandler);
     }
 
+    // ===== Terminal console =====
+    const terminalOpen = ref(false);
+    const termInput = ref('');
+    const termLog = ref([]);
+    const termInputEl = ref(null);
+    const termLogEl = ref(null);
+    let termHistory = [];
+    let termHistoryIdx = -1;
+    let termBooted = false;
+
+    const termEnabled = () => {
+      const tag = document.activeElement && document.activeElement.tagName;
+      return tag !== 'INPUT' && tag !== 'TEXTAREA';
+    };
+
+    function termPrint(text, type = 'out') {
+      termLog.value.push({ type, text });
+      nextTick(() => {
+        const el = termLogEl.value;
+        if (el) el.scrollTop = el.scrollHeight;
+      });
+    }
+
+    function openTerminal() {
+      terminalOpen.value = true;
+      if (!termBooted) {
+        termBooted = true;
+        termPrint('sser1to console v1.0');
+        termPrint("type 'help' to list commands");
+      }
+      nextTick(() => {
+        if (termInputEl.value) termInputEl.value.focus();
+      });
+    }
+
+    function closeTerminal() {
+      terminalOpen.value = false;
+    }
+
+    watch(terminalOpen, (open) => {
+      if (open && termInputEl.value) termInputEl.value.focus();
+      if (!open) runAbort();
+    });
+
+    const GOTO_MAP = {
+      hero: 'hero', home: 'hero', top: 'hero', start: 'hero',
+      education: 'education', edu: 'education',
+      programmer: 'programmer', dev: 'programmer',
+      designer: 'designer', design: 'designer',
+      analyst: 'analyst',
+      music: 'music', beats: 'music'
+    };
+
+    const OPEN_MAP = {
+      github: 'https://github.com/sser1to',
+      behance: 'https://www.behance.net/1e2387ef',
+      telegram: 'https://t.me/sser1to',
+      tg: 'https://t.me/sser1to'
+    };
+
+    function termHelp() {
+      [
+        'help ----------------- show this list',
+        'lang [ru|en] --------- get or set language',
+        'theme [dark|light] --- get or set theme',
+        'goto <section> ------- hero · education · programmer · designer · analyst · music',
+        'guess ---------------- higher/lower number game',
+        'run ------------------ pixel runner (space = jump)',
+        'tracks --------------- list tracks',
+        'play / pause --------- toggle playback',
+        'next / prev ---------- switch track',
+        'whoami --------------- about me',
+        'social --------------- print links',
+        'open <target> -------- github · behance · telegram',
+        'email ---------------- print email',
+        'clear ---------------- clear console'
+      ].forEach((line) => termPrint(line));
+    }
+
+    function setLanguage(value) {
+      lang.value = value;
+    }
+
+    // ===== Terminal game: guess =====
+    let guessActive = false;
+    let guessTarget = 0;
+    let guessAttempts = 0;
+
+    function guessStart() {
+      guessActive = true;
+      guessTarget = 1 + Math.floor(Math.random() * 100);
+      guessAttempts = 0;
+      termPrint('guess: I picked a number 1..100');
+      termPrint("type a number. 'exit' to quit");
+    }
+
+    function guessStep(raw, cmd) {
+      if (cmd === 'exit' || cmd === 'quit' || cmd === 'stop') {
+        guessActive = false;
+        termPrint('guess interrupted. target was ' + guessTarget);
+        return;
+      }
+      const num = Number(raw);
+      if (!Number.isInteger(num)) {
+        termPrint('game in progress — enter a number or exit', 'err');
+        return;
+      }
+      guessAttempts += 1;
+      if (num < guessTarget) {
+        termPrint('higher \u2191');
+      } else if (num > guessTarget) {
+        termPrint('lower \u2193');
+      } else {
+        guessActive = false;
+        const best = Number(localStorage.getItem('best-guess')) || 0;
+        termPrint('correct! ' + num + ' in ' + guessAttempts + ' attempts');
+        if (!best || guessAttempts < best) {
+          localStorage.setItem('best-guess', guessAttempts);
+          termPrint('new record: ' + guessAttempts + ' attempts');
+        } else {
+          termPrint('your record: ' + best + ' attempts');
+        }
+      }
+    }
+
+    function executeCommand(raw) {
+      const parts = raw.split(/\s+/);
+      const cmd = (parts[0] || '').toLowerCase();
+      const arg = (parts[1] || '').toLowerCase();
+
+      if (guessActive) {
+        guessStep(raw, cmd);
+        return;
+      }
+
+      switch (cmd) {
+        case 'help':
+          termHelp();
+          break;
+
+        case 'lang':
+          if (!arg) {
+            termPrint('lang: ' + lang.value);
+          } else if (arg === 'ru' || arg === 'en') {
+            setLanguage(arg);
+            termPrint('lang -> ' + arg);
+          } else {
+            termPrint("usage: lang [ru|en]", 'err');
+          }
+          break;
+
+        case 'theme': {
+          const root = document.documentElement;
+          if (!arg) {
+            termPrint('theme: ' + (root.classList.contains('dark') ? 'dark' : 'light'));
+            break;
+          }
+          if (arg === 'dark' && !root.classList.contains('dark')) {
+            root.classList.add('dark');
+          } else if (arg === 'light' && root.classList.contains('dark')) {
+            root.classList.remove('dark');
+          } else if (arg !== 'dark' && arg !== 'light') {
+            termPrint("usage: theme [dark|light]", 'err');
+            break;
+          }
+          localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+          root.classList.remove('sber-mode');
+          termPrint('theme -> ' + arg);
+          break;
+        }
+
+        case 'goto': {
+          const target = GOTO_MAP[arg];
+          if (!target) {
+            termPrint("usage: goto hero|education|programmer|designer|analyst|music", 'err');
+            break;
+          }
+          if (target === 'hero') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            const el = document.getElementById(target);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }
+          termPrint('navigating -> ' + target);
+          closeTerminal();
+          break;
+        }
+
+        case 'guess':
+          guessStart();
+          break;
+
+        case 'run':
+        case 'jump':
+          startRun();
+          break;
+
+        case 'tracks':
+          tracks.value.forEach((tr, i) => {
+            const marker = i === currentTrackIndex.value ? '  <- current' : '';
+            termPrint((i + 1) + '. ' + tr.title + marker);
+          });
+          break;
+
+        case 'play':
+          togglePlay();
+          termPrint('play/pause toggled');
+          break;
+
+        case 'pause': {
+          const el = audioEl.value;
+          if (el && !el.paused) el.pause();
+          termPrint('paused');
+          break;
+        }
+
+        case 'next':
+          nextTrack();
+          termPrint('next track');
+          break;
+
+        case 'prev':
+          prevTrack();
+          termPrint('previous track');
+          break;
+
+        case 'whoami':
+          termPrint('nikita letskolyuk');
+          termPrint('21 y.o. · chelyabinsk -> yekaterinburg');
+          termPrint("urfu '25-'29 · computer science (ai algorithms)");
+          termPrint('now: system analyst intern @ sber');
+          termPrint('stack: c# · python · postgres · docker · vue');
+          break;
+
+        case 'social':
+          termPrint('github    github.com/sser1to');
+          termPrint('behance   behance.net/1e2387ef');
+          termPrint('telegram  t.me/sser1to');
+          termPrint('email     nikitaletskolyuk@gmail.com');
+          break;
+
+        case 'open': {
+          const url = OPEN_MAP[arg];
+          if (!url) {
+            termPrint("usage: open github|behance|telegram", 'err');
+            break;
+          }
+          window.open(url, '_blank', 'noopener');
+          termPrint('opening ' + arg + '...');
+          break;
+        }
+
+        case 'email':
+          termPrint('nikitaletskolyuk@gmail.com');
+          break;
+
+        case 'clear':
+          termLog.value = [];
+          break;
+
+        // ===== easter eggs (см. README) =====
+
+        case 'sser1to':
+          termPrint('born to win');
+          break;
+
+        case '6lockthu9':
+          termPrint("let's get this show on the road!");
+          break;
+
+        case 'n1krus':
+          termPrint('I wonder if the server will ever come back to life?');
+          break;
+
+        case '54':
+          termPrint('54');
+          triggerEaster54();
+          break;
+
+        case 'sber':
+          document.documentElement.classList.add('sber-mode');
+          termPrint('secret sber theme engaged');
+          termPrint('switch theme to turn it off');
+          break;
+
+        default:
+          termPrint("command not found: " + cmd + " — try 'help'", 'err');
+      }
+    }
+
+    function runCommand() {
+      const raw = termInput.value.trim();
+      if (!raw) return;
+      termPrint('\u276F ' + raw, 'in');
+      termHistory.push(raw);
+      termHistoryIdx = termHistory.length;
+      termInput.value = '';
+      executeCommand(raw);
+    }
+
+    function termHistoryUp() {
+      if (!termHistory.length) return;
+      termHistoryIdx = termHistoryIdx === -1 ? termHistory.length - 1 : Math.max(0, termHistoryIdx - 1);
+      termInput.value = termHistory[termHistoryIdx];
+    }
+
+    function termHistoryDown() {
+      if (termHistoryIdx === -1) return;
+      termHistoryIdx += 1;
+      if (termHistoryIdx >= termHistory.length) {
+        termHistoryIdx = -1;
+        termInput.value = '';
+      } else {
+        termInput.value = termHistory[termHistoryIdx];
+      }
+    }
+
+    // ===== Easter eggs =====
+    const easter54Visible = ref(false);
+    let easter54Timer = null;
+
+    function triggerEaster54() {
+      if (easter54Timer) clearTimeout(easter54Timer);
+      easter54Visible.value = true;
+      easter54Timer = setTimeout(() => {
+        easter54Visible.value = false;
+        easter54Timer = null;
+      }, 1700);
+    }
+
+    // ===== Terminal game: run (mini runner on canvas) =====
+    const runOpen = ref(false);
+    const runCanvasEl = ref(null);
+    let runRaf = null;
+    let runLast = 0;
+    let runCtx = null;
+    let runW = 0;
+    let runH = 0;
+    let runState = null;
+    let runKeyHandler = null;
+
+    const RUN_GROUND_PAD = 28;
+    const RUN_PLAYER_X = 40;
+    const RUN_PLAYER_W = 18;
+
+    function runJump() {
+      if (!runState || runState.over) return;
+      if (runState.py <= 0.01 && runState.vy === 0) {
+        runState.vy = 620;
+      }
+    }
+
+    function runReadColors() {
+      const css = getComputedStyle(document.documentElement);
+      const pick = (name, fallback) => (css.getPropertyValue(name) || '').trim() || fallback;
+      return {
+        accent: pick('--accent', '#6b5ce7'),
+        text: pick('--text', '#1f1d1a'),
+        muted: pick('--muted', '#6f6b63'),
+        border: pick('--border', '#e5e2d9')
+      };
+    }
+
+    function runInitCanvas() {
+      const canvas = runCanvasEl.value;
+      if (!canvas) return false;
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return false;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      runCtx = canvas.getContext('2d');
+      runCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      runW = rect.width;
+      runH = rect.height;
+      return true;
+    }
+
+    function runHandleKey(e) {
+      const key = e.key.toLowerCase();
+      if (e.key === ' ' || e.key === 'ArrowUp' || key === 'w') {
+        e.preventDefault();
+        runJump();
+      } else if (key === 'q') {
+        runEnd(false);
+      }
+    }
+
+    function startRun() {
+      if (runOpen.value) return;
+      guessActive = false;
+      runOpen.value = true;
+      nextTick(() => {
+        if (!runInitCanvas()) {
+          runOpen.value = false;
+          return;
+        }
+        if (termInputEl.value) termInputEl.value.blur();
+        runState = {
+          py: 0,
+          vy: 0,
+          dist: 0,
+          over: false,
+          obstacles: [{ x: runW + 180, w: 14, h: 22 }]
+        };
+        runLast = 0;
+        runKeyHandler = runHandleKey;
+        window.addEventListener('keydown', runKeyHandler);
+        runRaf = requestAnimationFrame(runLoop);
+      });
+    }
+
+    function stopRunHandlers() {
+      if (runRaf) {
+        cancelAnimationFrame(runRaf);
+        runRaf = null;
+      }
+      if (runKeyHandler) {
+        window.removeEventListener('keydown', runKeyHandler);
+        runKeyHandler = null;
+      }
+    }
+
+    // aborted without a printed result (terminal closed mid-game)
+    function runAbort() {
+      if (!runOpen.value) return;
+      runOpen.value = false;
+      runState = null;
+      stopRunHandlers();
+    }
+
+    function runEnd(crashed) {
+      if (!runState) return;
+      const score = Math.floor(runState.dist / 8);
+      const wasCrashed = runState.over || crashed;
+      runState = null;
+      stopRunHandlers();
+      runOpen.value = false;
+      const best = Number(localStorage.getItem('best-run')) || 0;
+      termPrint(wasCrashed ? 'run: crashed' : 'run: quit', wasCrashed ? 'err' : 'out');
+      termPrint('score ' + score + (best && score < best ? ' · best ' + best : ''));
+      if (!best || score > best) {
+        localStorage.setItem('best-run', score);
+        termPrint('new record: ' + score);
+      }
+      termPrint("type 'run' to play again");
+    }
+
+    function runDraw(colors) {
+      const st = runState;
+      const ground = runH - RUN_GROUND_PAD;
+      const ctx = runCtx;
+
+      ctx.clearRect(0, 0, runW, runH);
+
+      // ground
+      ctx.strokeStyle = colors.border;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, ground + 0.5);
+      ctx.lineTo(runW, ground + 0.5);
+      ctx.stroke();
+
+      // obstacles
+      ctx.fillStyle = colors.muted;
+      for (const ob of st.obstacles) {
+        ctx.fillRect(ob.x, ground - ob.h, ob.w, ob.h);
+      }
+
+      // player
+      ctx.fillStyle = colors.accent;
+      const pBottom = ground - st.py;
+      ctx.fillRect(RUN_PLAYER_X, pBottom - RUN_PLAYER_W, RUN_PLAYER_W, RUN_PLAYER_W);
+
+      // hud
+      ctx.fillStyle = colors.muted;
+      ctx.font = '600 10px "JetBrains Mono", monospace';
+      const score = Math.floor(st.dist / 8);
+      const best = Number(localStorage.getItem('best-run')) || 0;
+      ctx.fillText('score ' + String(score).padStart(4, '0') + '  best ' + String(best).padStart(4, '0'), 8, 16);
+    }
+
+    function runLoop(ts) {
+      if (!runOpen.value || !runState) return;
+      const st = runState;
+      const colors = runReadColors();
+
+      if (!runLast) runLast = ts;
+      const dt = Math.min(0.05, (ts - runLast) / 1000);
+      runLast = ts;
+
+      // physics
+      const speed = Math.min(520, 230 + st.dist * 0.05);
+      st.dist += speed * dt;
+      if (st.py > 0 || st.vy > 0) {
+        st.py += st.vy * dt;
+        st.vy -= 2100 * dt;
+        if (st.py <= 0) {
+          st.py = 0;
+          st.vy = 0;
+        }
+      }
+
+      // obstacles
+      const ground = runH - RUN_GROUND_PAD;
+      for (const ob of st.obstacles) {
+        ob.x -= speed * dt;
+      }
+      st.obstacles = st.obstacles.filter((ob) => ob.x + ob.w > -10);
+      const last = st.obstacles[st.obstacles.length - 1];
+      const lastEdge = last ? last.x + last.w : -Infinity;
+      const gap = 240 + Math.random() * 280 + speed * 0.35;
+      if (runW - lastEdge > gap) {
+        st.obstacles.push({
+          x: runW + 10,
+          w: 12 + Math.random() * 12,
+          h: 16 + Math.random() * 26
+        });
+      }
+
+      // collision
+      const pLeft = RUN_PLAYER_X + 2;
+      const pRight = RUN_PLAYER_X + RUN_PLAYER_W - 2;
+      const pTop = ground - st.py - RUN_PLAYER_W + 2;
+      const pBottom = ground - st.py;
+      for (const ob of st.obstacles) {
+        const oTop = ground - ob.h;
+        if (pRight > ob.x && pLeft < ob.x + ob.w && pBottom > oTop) {
+          st.over = true;
+          runEnd(true);
+          return;
+        }
+      }
+
+      runDraw(colors);
+      runRaf = requestAnimationFrame(runLoop);
+    }
+
     // ===== Telegram ad modal =====
     const adVisible = ref(false);
     const adWidgetHost = ref(null);
@@ -426,11 +966,27 @@ createApp({
     }, { flush: 'post' });
 
     function onKeydown(e) {
-      if (e.key !== 'Escape') return;
-      if (adVisible.value) {
-        closeAd();
-      } else if (lightboxOpen.value) {
-        closeLightbox();
+      if (e.key === 'Escape') {
+        if (terminalOpen.value) {
+          closeTerminal();
+          return;
+        }
+        if (adVisible.value) {
+          closeAd();
+        } else if (lightboxOpen.value) {
+          closeLightbox();
+        }
+        return;
+      }
+
+      // Ctrl+K / Cmd+K / ` — открыть консоль
+      if (!terminalOpen.value && termEnabled()) {
+        const isBackquote = e.key === '`';
+        const isCtrlK = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k';
+        if (isBackquote || isCtrlK) {
+          e.preventDefault();
+          openTerminal();
+        }
       }
     }
 
@@ -484,7 +1040,21 @@ createApp({
       prevTrack,
       onLoadedMetadata,
       onTimeUpdate,
-      onProgressDown
+      onProgressDown,
+      terminalOpen,
+      termInput,
+      termLog,
+      termInputEl,
+      termLogEl,
+      openTerminal,
+      closeTerminal,
+      runCommand,
+      termHistoryUp,
+      termHistoryDown,
+      easter54Visible,
+      runOpen,
+      runCanvasEl,
+      runJump
     };
   }
 }).mount('#app');
@@ -595,6 +1165,7 @@ if (themeToggle) {
 
   themeToggle.addEventListener('click', () => {
     rootEl.classList.toggle('dark');
+    rootEl.classList.remove('sber-mode');
     localStorage.setItem('theme', rootEl.classList.contains('dark') ? 'dark' : 'light');
   });
 }
