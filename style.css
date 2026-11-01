@@ -635,6 +635,35 @@ html.dark .theme-toggle .icon-moon {
   display: block;
 }
 
+/* ===== LANGUAGE TOGGLE ===== */
+.lang-toggle {
+  position: fixed;
+  top: 20px;
+  right: 78px;
+  z-index: 900;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--frame-border);
+  background: var(--frame-bg);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(107, 92, 231, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.lang-toggle:hover {
+  transform: scale(1.1);
+  border-color: var(--accent);
+}
+
 /* ===== SCROLL PROGRESS ===== */
 .scroll-progress {
   position: fixed;
@@ -667,7 +696,8 @@ html.dark .theme-toggle .icon-moon {
 }
 
 body.lightbox-open .scroll-progress,
-body.lightbox-open .theme-toggle {
+body.lightbox-open .theme-toggle,
+body.lightbox-open .lang-toggle {
   opacity: 0;
   pointer-events: none;
 }

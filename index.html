@@ -10,6 +10,7 @@
 <body>
   <div id="preloader" class="preloader">
     <span class="preloader-text">Инициализация...</span>
+    <!-- Текст прелоадера подставляется из app.js по выбранному языку -->
     <div class="preloader-bar">
       <div class="preloader-bar-fill"></div>
     </div>
@@ -21,24 +22,19 @@
     <section class="hero">
       <div class="hero-left">
         <div class="photo-circle">
-          <img src="src/img/my_photo.png" alt="Никита Лецколюк" class="photo-img">
+          <img src="src/img/my_photo.png" :alt="t('photoAlt')" class="photo-img">
         </div>
       </div>
       <div class="hero-right">
-        <h1 class="hero-title">Привет!</h1>
-        <p class="hero-text">
-          Меня зовут Никита, мне 21 год, увлекаюсь
-          <a href="#programmer" class="highlight">программированием</a>,
-          <a href="#designer" class="highlight">веб-дизайном</a> и
-          <a href="#analyst" class="highlight">аналитикой</a>.
-        </p>
+        <h1 class="hero-title">{{ t('heroTitle') }}</h1>
+        <p class="hero-text" v-html="t('heroText')"></p>
         <div class="divider"></div>
         <p class="hero-quote">
-          "Шансы на успех есть всегда - моя задача превратить их в результат."
+          "{{ t('heroQuote') }}"
         </p>
         <div class="divider"></div>
         <a href="#education" class="learn-more">
-          Узнать больше
+          {{ t('learnMore') }}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
           </svg>
@@ -48,19 +44,19 @@
 
     <!-- Секция 2: Образование -->
     <section id="education" class="section">
-      <h2 class="section-title">Образование</h2>
+      <h2 class="section-title">{{ t('educationTitle') }}</h2>
       <div class="section-divider"></div>
       <div class="timeline">
         <div class="timeline-item">
           <span class="timeline-dot" aria-hidden="true"></span>
           <div class="timeline-content">
             <span class="timeline-period">2021 — 2025</span>
-            <h3 class="timeline-place">ЮУрГТК</h3>
+            <h3 class="timeline-place">{{ t('eduPlace1') }}</h3>
             <p class="timeline-desc">
-              Южно-Уральский государственный технический колледж, г. Челябинск
+              {{ t('eduDesc1') }}
             </p>
             <p class="timeline-specialty">
-              Информационные системы и программирование (Программист)
+              {{ t('eduSpec1') }}
             </p>
           </div>
         </div>
@@ -68,14 +64,14 @@
           <span class="timeline-dot" aria-hidden="true"></span>
           <div class="timeline-content">
             <span class="timeline-period">2025 — 2029</span>
-            <h3 class="timeline-place">УрФУ</h3>
+            <h3 class="timeline-place">{{ t('eduPlace2') }}</h3>
             <p class="timeline-desc">
-              Уральский федеральный университет, г. Екатеринбург
+              {{ t('eduDesc2') }}
             </p>
             <p class="timeline-specialty">
-              Информатика и вычислительная техника (Алгоритмы искусственного интеллекта)
+              {{ t('eduSpec2') }}
             </p>
-            <span class="timeline-badge">сейчас на 2 курсе</span>
+            <span class="timeline-badge">{{ t('nowBadge') }}</span>
           </div>
         </div>
       </div>
@@ -83,14 +79,11 @@
 
     <!-- Секция 3: Программист -->
     <section id="programmer" class="section">
-      <h2 class="section-title">Я - программист</h2>
+      <h2 class="section-title">{{ t('programmerTitle') }}</h2>
       <div class="section-divider"></div>
       <div class="section-text-block">
         <p>
-          Имею практический опыт участия в разработке информационных систем,
-          программного обеспечения и сервисов. Более 2-х лет участвую в IT-хакатонах, во
-          время которых применял на себе роли DevOps и backend-разработчика. Пишу код на
-          C# и Python.
+          {{ t('programmerText') }}
         </p>
       </div>
       <div class="tech-icons">
@@ -110,17 +103,16 @@
           <img src="src/img/vue.svg" alt="Vue.js">
         </div>
       </div>
-      <p class="github-link">Все мои проекты можно посмотреть на <a href="https://github.com/sser1to" target="_blank">GitHub</a>.</p>
+      <p class="github-link" v-html="t('githubAll')"></p>
     </section>
 
     <!-- Секция 4: Веб-дизайнер -->
     <section id="designer" class="section section-alt">
-      <h2 class="section-title">Я - дизайнер</h2>
+      <h2 class="section-title">{{ t('designerTitle') }}</h2>
       <div class="section-divider"></div>
       <div class="section-text-block">
         <p>
-          Умею с нуля делать красивые презентации, проектировать веб-интерфейсы и создавать
-          оригинальные и запоминающиеся логотипы.
+          {{ t('designerText') }}
         </p>
       </div>
       <div class="carousel">
@@ -128,15 +120,15 @@
           <div class="carousel-viewport" @pointerdown="onPointerDown" @pointerup="onPointerUp">
             <div class="carousel-track" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
               <div class="carousel-slide" v-for="(slide, i) in slides" :key="i">
-                <img :src="slide.src" :alt="`Дизайн ${i + 1}`" class="slide-photo" @click="openLightbox(slide.src)">
+                <img :src="slide.src" :alt="t('designAlt') + ' ' + (i + 1)" class="slide-photo" @click="openLightbox(slide.src)">
               </div>
             </div>
-            <button class="carousel-btn carousel-btn-left" @click="prevSlide" aria-label="Предыдущий слайд">
+            <button class="carousel-btn carousel-btn-left" @click="prevSlide" :aria-label="t('prevSlide')">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M15 18l-6-6 6-6"/>
               </svg>
             </button>
-            <button class="carousel-btn carousel-btn-right" @click="nextSlide" aria-label="Следующий слайд">
+            <button class="carousel-btn carousel-btn-right" @click="nextSlide" :aria-label="t('nextSlide')">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M9 18l6-6-6-6"/>
               </svg>
@@ -150,34 +142,31 @@
             class="carousel-dot"
             :class="{ active: i === currentSlide }"
             @click="currentSlide = i"
-            :aria-label="`Слайд ${i + 1}`"
+            :aria-label="t('slideN', i + 1)"
           ></button>
         </div>
       </div>
-      <p class="github-link">Мои работы можно посмотреть на <a href="https://www.behance.net/1e2387ef" target="_blank">Behance</a>.</p>
+      <p class="github-link" v-html="t('githubBeh')"></p>
     </section>
 
     <!-- Секция 5: Системный аналитик -->
     <section id="analyst" class="section">
-      <h2 class="section-title">Я - аналитик</h2>
+      <h2 class="section-title">{{ t('analystTitle') }}</h2>
       <div class="section-divider"></div>
       <div class="section-text-block">
         <p>
-          Имею опыт анализа и формализации требований, взаимодействия с разработчиками и
-          заказчиками, описания функциональности системы и моделирования бизнес-логики.
-          Владею UML и умею разрабатывать диаграммы Use Case, Sequence, Activity, Class и
-          Component для описания архитектуры и процессов системы, а также ER-диаграммы.
+          {{ t('analystText') }}
         </p>
       </div>
     </section>
 
     <!-- Секция 6: Музыка -->
     <section id="music" class="section">
-      <h2 class="section-title">Я - битмейкер</h2>
+      <h2 class="section-title">{{ t('musicTitle') }}</h2>
       <div class="section-divider"></div>
       <div class="section-text-block">
         <p>
-          Когда-то я увлекался созданием музыки. Ниже вы можете послушать несколько хороших примеров.
+          {{ t('musicText') }}
         </p>
       </div>
       <div class="player" v-cloak>
@@ -191,7 +180,7 @@
           </div>
           <div class="player-body">
             <div class="player-now">
-              <span class="player-now-label">Сейчас играет</span>
+              <span class="player-now-label">{{ t('nowPlaying') }}</span>
               <transition name="track-fade" mode="out-in">
                 <h3 class="player-title" :key="currentTrackIndex">{{ currentTrack.title }}</h3>
               </transition>
@@ -221,12 +210,12 @@
             </div>
 
             <div class="player-controls">
-              <button class="player-btn" @click="prevTrack" aria-label="Предыдущий трек">
+              <button class="player-btn" @click="prevTrack" :aria-label="t('prevTrack')">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                 </svg>
               </button>
-              <button class="player-btn player-btn-play" @click="togglePlay" aria-label="Воспроизвести или поставить на паузу">
+              <button class="player-btn player-btn-play" @click="togglePlay" :aria-label="t('playPause')">
                 <svg v-if="!isPlaying" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
@@ -234,7 +223,7 @@
                   <path d="M6 5h4v14H6zM14 5h4v14h-4z"/>
                 </svg>
               </button>
-              <button class="player-btn" @click="nextTrack" aria-label="Следующий трек">
+              <button class="player-btn" @click="nextTrack" :aria-label="t('nextTrack')">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/>
                 </svg>
@@ -265,11 +254,11 @@
     <footer class="footer">
       <div class="footer-content">
         <div class="footer-left">
-          <h3 class="footer-name">Лецколюк<br>Никита<br>Максимович</h3>
+          <h3 class="footer-name" v-html="t('footerName')"></h3>
           <p class="footer-copy">© 2026</p>
         </div>
         <div class="footer-right">
-          <h4 class="footer-contacts-title">Мои контакты</h4>
+          <h4 class="footer-contacts-title">{{ t('footerContacts') }}</h4>
           <div class="footer-contact">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12C24 5.37 18.63 0 12 0zm5.95 7.47l-1.95 9.18c-.15.67-.54.83-1.09.52l-3.01-2.21-1.45 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.22-.05-.33-.37-.14l-6.87 4.32-2.96-.92c-.64-.2-.65-.64.14-.95l11.56-4.46c.54-.2 1.01.13.83.95z"/>
@@ -306,13 +295,13 @@
     >
       <img
         :src="lightboxSrc"
-        alt="Просмотр дизайна"
+        :alt="t('designPreview')"
         class="lightbox-img"
         :class="{ 'no-transition': lightboxDragging }"
         :style="{ transform: `translate(${lightboxX}px, ${lightboxY}px) scale(${lightboxScale})` }"
         draggable="false"
       >
-      <button class="lightbox-close" @click="closeLightbox" aria-label="Закрыть">
+      <button class="lightbox-close" @click="closeLightbox" :aria-label="t('close')">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <path d="M18 6L6 18M6 6l12 12"/>
         </svg>
@@ -323,7 +312,7 @@
     <transition name="ad">
       <div v-if="adVisible" class="ad-wrap">
         <div class="ad-card">
-          <button class="ad-close" @click="closeAd" aria-label="Закрыть">
+          <button class="ad-close" @click="closeAd" :aria-label="t('close')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
@@ -332,7 +321,7 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12C24 5.37 18.63 0 12 0zm5.95 7.47l-1.95 9.18c-.15.67-.54.83-1.09.52l-3.01-2.21-1.45 1.4c-.16.16-.3.3-.62.3l.22-3.05 5.56-5.02c.24-.22-.05-.33-.37-.14l-6.87 4.32-2.96-.92c-.64-.2-.65-.64.14-.95l11.56-4.46c.54-.2 1.01.13.83.95z"/>
             </svg>
-            У меня есть личный тгк канал
+            <span>{{ t('adTitle') }}</span>
           </p>
           <div ref="adWidgetHost" class="ad-widget-host"></div>
           <a v-if="!adWidgetCreated" class="ad-fallback" href="https://t.me/sser1tohub" target="_blank" rel="noopener">t.me/sser1tohub</a>
@@ -341,6 +330,10 @@
     </transition>
 
   </div>
+
+  <button id="lang-toggle" class="lang-toggle" aria-label="Switch language">
+    <span id="lang-toggle-text">EN</span>
+  </button>
 
   <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">
     <svg class="icon-sun" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">

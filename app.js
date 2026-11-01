@@ -19,8 +19,134 @@ function pointerMid(a, b) {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// i18n ////////////////////////////////////////////////////////////////////////
+
+const TRANSLATIONS = {
+  ru: {
+    siteTitle: 'Обо мне',
+    init: 'Инициализация...',
+    themeAria: 'Переключить тему',
+    progressAria: 'Прогресс чтения страницы',
+    langAria: 'Переключить язык',
+    photoAlt: 'Никита Лецколюк',
+    heroTitle: 'Привет!',
+    heroText: 'Меня зовут Никита, мне 21 год, увлекаюсь <a href="#programmer" class="highlight">программированием</a>, <a href="#designer" class="highlight">веб-дизайном</a> и <a href="#analyst" class="highlight">аналитикой</a>.',
+    heroQuote: 'Шансы на успех есть всегда - моя задача превратить их в результат.',
+    learnMore: 'Узнать больше',
+    educationTitle: 'Образование',
+    eduPlace1: 'ЮУрГТК',
+    eduDesc1: 'Южно-Уральский государственный технический колледж, г. Челябинск',
+    eduSpec1: 'Информационные системы и программирование (Программист)',
+    eduDesc2: 'Уральский федеральный университет, г. Екатеринбург',
+    eduPlace2: 'УрФУ',
+    eduSpec2: 'Информатика и вычислительная техника (Алгоритмы искусственного интеллекта)',
+    nowBadge: 'сейчас на 2 курсе',
+    programmerTitle: 'Я - программист',
+    programmerText: 'Имею практический опыт участия в разработке информационных систем, программного обеспечения и сервисов. Более 2-х лет участвую в IT-хакатонах, во время которых применял на себе роли DevOps и backend-разработчика. Пишу код на C# и Python.',
+    githubAll: 'Все мои проекты можно посмотреть на <a href="https://github.com/sser1to" target="_blank">GitHub</a>.',
+    designerTitle: 'Я - дизайнер',
+    designerText: 'Умею с нуля делать красивые презентации, проектировать веб-интерфейсы и создавать оригинальные и запоминающиеся логотипы.',
+    githubBeh: 'Мои работы можно посмотреть на <a href="https://www.behance.net/1e2387ef" target="_blank">Behance</a>.',
+    analystTitle: 'Я - аналитик',
+    analystText: 'Имею опыт анализа и формализации требований, взаимодействия с разработчиками и заказчиками, описания функциональности системы и моделирования бизнес-логики. Владею UML и умею разрабатывать диаграммы Use Case, Sequence, Activity, Class и Component для описания архитектуры и процессов системы, а также ER-диаграммы.',
+    musicTitle: 'Я - битмейкер',
+    musicText: 'Когда-то я увлекался созданием музыки. Ниже вы можете послушать несколько хороших примеров.',
+    nowPlaying: 'Сейчас играет',
+    prevTrack: 'Предыдущий трек',
+    playPause: 'Воспроизвести или поставить на паузу',
+    nextTrack: 'Следующий трек',
+    designAlt: 'Дизайн',
+    slideN: 'Слайд {0}',
+    prevSlide: 'Предыдущий слайд',
+    nextSlide: 'Следующий слайд',
+    designPreview: 'Просмотр дизайна',
+    close: 'Закрыть',
+    adTitle: 'У меня есть личный тгк канал',
+    footerName: 'Лецколюк<br>Никита<br>Максимович',
+    footerContacts: 'Мои контакты'
+  },
+  en: {
+    siteTitle: 'About Me',
+    init: 'Initializing...',
+    themeAria: 'Toggle theme',
+    progressAria: 'Page reading progress',
+    langAria: 'Switch language',
+    photoAlt: 'Nikita Letskolyuk',
+    heroTitle: 'Hi there!',
+    heroText: 'My name is Nikita, I am 21 years old, and I am into <a href="#programmer" class="highlight">programming</a>, <a href="#designer" class="highlight">web design</a> and <a href="#analyst" class="highlight">analytics</a>.',
+    heroQuote: 'There is always a chance of success - my job is to turn it into results.',
+    learnMore: 'Learn more',
+    educationTitle: 'Education',
+    eduPlace1: 'SUUTC',
+    eduDesc1: 'South Ural State Technical College, Chelyabinsk',
+    eduSpec1: 'Information Systems and Programming (Programmer)',
+    eduDesc2: 'Ural Federal University, Yekaterinburg',
+    eduPlace2: 'UrFU',
+    eduSpec2: 'Computer Science (AI Algorithms)',
+    nowBadge: 'now in 2nd year',
+    programmerTitle: "I'm a programmer",
+    programmerText: 'I have hands-on experience in the development of information systems, software and services. For more than 2 years I have been taking part in IT hackathons, where I took on the roles of DevOps and backend developer. I write code in C# and Python.',
+    githubAll: 'All my projects can be found on <a href="https://github.com/sser1to" target="_blank">GitHub</a>.',
+    designerTitle: "I'm a designer",
+    designerText: 'I can create beautiful presentations from scratch, design web interfaces, and craft original and memorable logos.',
+    githubBeh: 'My works can be found on <a href="https://www.behance.net/1e2387ef" target="_blank">Behance</a>.',
+    analystTitle: "I'm an analyst",
+    analystText: 'I have experience in analyzing and formalizing requirements, working with developers and customers, describing system functionality and modeling business logic. I know UML and can develop Use Case, Sequence, Activity, Class and Component diagrams to describe system architecture and processes, as well as ER diagrams.',
+    musicTitle: "I'm a beatmaker",
+    musicText: 'I used to be into making music. Below you can listen to a few good examples.',
+    nowPlaying: 'Now playing',
+    prevTrack: 'Previous track',
+    playPause: 'Play or pause',
+    nextTrack: 'Next track',
+    designAlt: 'Design',
+    slideN: 'Slide {0}',
+    prevSlide: 'Previous slide',
+    nextSlide: 'Next slide',
+    designPreview: 'Design preview',
+    close: 'Close',
+    adTitle: 'I have a personal Telegram channel',
+    footerName: 'Letskolyuk<br>Nikita<br>Maximovich',
+    footerContacts: 'My contacts'
+  }
+};
+
+const DEFAULT_LANG = 'ru';
+const SUPPORTED_LANGS = ['ru', 'en'];
+
+function getSavedLang() {
+  const saved = localStorage.getItem('lang');
+  return SUPPORTED_LANGS.includes(saved) ? saved : DEFAULT_LANG;
+}
+
+function translate(lang, key, args = []) {
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS[DEFAULT_LANG];
+  let text = dict[key] !== undefined ? dict[key] : key;
+  args.forEach((arg, i) => {
+    text = text.replace('{' + i + '}', arg);
+  });
+  return text;
+}
+
 createApp({
   setup() {
+    const lang = ref(getSavedLang());
+
+    const t = (key, ...args) => translate(lang.value, key, args);
+
+    window.__setSiteLang = (value) => {
+      if (SUPPORTED_LANGS.includes(value)) {
+        lang.value = value;
+      }
+    };
+
+    watch(lang, (value) => {
+      localStorage.setItem('lang', value);
+      document.documentElement.lang = value;
+      document.title = translate(value, 'siteTitle');
+      window.dispatchEvent(new CustomEvent('langchange', { detail: value }));
+    }, { immediate: true });
+
     const currentSlide = ref(0);
 
     const slides = ref([
@@ -307,6 +433,8 @@ createApp({
     });
 
     return {
+      lang,
+      t,
       currentSlide,
       slides,
       nextSlide,
@@ -391,7 +519,52 @@ if (preloader) {
 const themeToggle = document.getElementById('theme-toggle');
 const rootEl = document.documentElement;
 
+const langToggle = document.getElementById('lang-toggle');
+const langToggleText = document.getElementById('lang-toggle-text');
 const scrollProgress = document.getElementById('scroll-progress');
+
+let uiLang = getSavedLang();
+
+function applyStaticI18n(value) {
+  document.documentElement.lang = value;
+  document.title = translate(value, 'siteTitle');
+
+  const preloaderText = document.querySelector('.preloader-text');
+  if (preloaderText) {
+    preloaderText.textContent = translate(value, 'init');
+  }
+
+  if (themeToggle) {
+    themeToggle.setAttribute('aria-label', translate(value, 'themeAria'));
+  }
+
+  if (scrollProgress) {
+    scrollProgress.setAttribute('aria-label', translate(value, 'progressAria'));
+  }
+
+  if (langToggle && langToggleText) {
+    langToggle.setAttribute('aria-label', translate(value, 'langAria'));
+    langToggleText.textContent = value === 'ru' ? 'EN' : 'RU';
+  }
+}
+
+applyStaticI18n(uiLang);
+
+window.addEventListener('langchange', (e) => {
+  uiLang = e.detail;
+  applyStaticI18n(uiLang);
+});
+
+if (langToggle) {
+  langToggle.addEventListener('click', () => {
+    uiLang = uiLang === 'ru' ? 'en' : 'ru';
+    applyStaticI18n(uiLang);
+    if (window.__setSiteLang) {
+      window.__setSiteLang(uiLang);
+    }
+  });
+}
+
 const scrollProgressText = document.querySelector('.scroll-progress-text');
 
 let maxScrollPct = 0;
