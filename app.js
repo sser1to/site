@@ -25,11 +25,12 @@ function pointerMid(a, b) {
 const TRANSLATIONS = {
   ru: {
     siteTitle: 'Обо мне',
-    init: 'Инициализация...',
+    init: 'Инициализация',
     themeAria: 'Переключить тему',
     progressAria: 'Прогресс чтения страницы',
     langAria: 'Переключить язык',
     photoAlt: 'Никита Лецколюк',
+    heroKicker: '/ код · дизайн · аналитика · музыка',
     heroTitle: 'Привет!',
     heroText: 'Меня зовут Никита, мне 21 год, увлекаюсь <a href="#programmer" class="highlight">программированием</a>, <a href="#designer" class="highlight">веб-дизайном</a> и <a href="#analyst" class="highlight">аналитикой</a>.',
     heroQuote: 'Шансы на успех есть всегда - моя задача превратить их в результат.',
@@ -50,6 +51,11 @@ const TRANSLATIONS = {
     githubBeh: 'Мои работы можно посмотреть на <a href="https://www.behance.net/1e2387ef" target="_blank">Behance</a>.',
     analystTitle: 'Я - аналитик',
     analystText: 'Имею опыт анализа и формализации требований, взаимодействия с разработчиками и заказчиками, описания функциональности системы и моделирования бизнес-логики. Владею UML и умею разрабатывать диаграммы Use Case, Sequence, Activity, Class и Component для описания архитектуры и процессов системы, а также ER-диаграммы.',
+    analystText2: 'Обладаю навыками проектирования API и баз данных: умею определять структуру и взаимосвязи сущностей, проектировать модели данных, описывать взаимодействие компонентов системы и формировать спецификации API.',
+    analystText3: 'Обладаю аналитическим складом ума, навыками декомпозиции задач и системного мышления. Умею организовывать взаимодействие внутри команды, формулировать требования и переводить бизнес-потребности в понятную техническую структуру. Также умею составлять тест-кейсы для проверки функциональности системы и соответствия реализованного решения требованиям.',
+    untilNow: 'сейчас',
+    intern1: 'Прошёл турбостажировку в Сбер на системного аналитика.',
+    intern2: 'Стажируюсь на системного аналитика в Сбер.',
     musicTitle: 'Я - битмейкер',
     musicText: 'Когда-то я увлекался созданием музыки. Ниже вы можете послушать несколько хороших примеров.',
     nowPlaying: 'Сейчас играет',
@@ -68,11 +74,12 @@ const TRANSLATIONS = {
   },
   en: {
     siteTitle: 'About Me',
-    init: 'Initializing...',
+    init: 'Initializing',
     themeAria: 'Toggle theme',
     progressAria: 'Page reading progress',
     langAria: 'Switch language',
     photoAlt: 'Nikita Letskolyuk',
+    heroKicker: '/ code · design · analytics · beats',
     heroTitle: 'Hi there!',
     heroText: 'My name is Nikita, I am 21 years old, and I am into <a href="#programmer" class="highlight">programming</a>, <a href="#designer" class="highlight">web design</a> and <a href="#analyst" class="highlight">analytics</a>.',
     heroQuote: 'There is always a chance of success - my job is to turn it into results.',
@@ -93,6 +100,11 @@ const TRANSLATIONS = {
     githubBeh: 'My works can be found on <a href="https://www.behance.net/1e2387ef" target="_blank">Behance</a>.',
     analystTitle: "I'm an analyst",
     analystText: 'I have experience in analyzing and formalizing requirements, working with developers and customers, describing system functionality and modeling business logic. I know UML and can develop Use Case, Sequence, Activity, Class and Component diagrams to describe system architecture and processes, as well as ER diagrams.',
+    analystText2: 'I also have API and database design skills: I can define the structure and relationships of entities, design data models, describe how system components interact, and produce API specifications.',
+    analystText3: 'I have an analytical mindset, task decomposition skills and systems thinking. I know how to organize collaboration within a team, formulate requirements, and turn business needs into a clear technical structure. I can also write test cases to verify system functionality and check that the implemented solution meets the requirements.',
+    untilNow: 'now',
+    intern1: 'Completed a turbo internship at Sber as a system analyst.',
+    intern2: 'Currently doing a system analyst internship at Sber.',
     musicTitle: "I'm a beatmaker",
     musicText: 'I used to be into making music. Below you can listen to a few good examples.',
     nowPlaying: 'Now playing',
@@ -565,19 +577,11 @@ if (langToggle) {
   });
 }
 
-const scrollProgressText = document.querySelector('.scroll-progress-text');
-
-let maxScrollPct = 0;
-
 function updateScrollProgress() {
   const doc = document.documentElement;
   const max = doc.scrollHeight - window.innerHeight;
   const pct = max > 0 ? clamp(Math.round((window.scrollY / max) * 100), 0, 100) : 0;
-  if (pct > maxScrollPct) {
-    maxScrollPct = pct;
-  }
-  scrollProgressText.textContent = maxScrollPct + '%';
-  scrollProgress.style.setProperty('--progress', maxScrollPct * 3.6 + 'deg');
+  scrollProgress.style.setProperty('--scroll-progress', pct + '%');
 }
 
 window.addEventListener('scroll', updateScrollProgress, { passive: true });
