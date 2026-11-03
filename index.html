@@ -275,6 +275,17 @@
       </div>
     </section>
 
+    <!-- Кирпичная кладка навыков -->
+    <div class="brick-wall">
+      <div v-for="(row, r) in skillRows" :key="r" class="brick-row" :class="'brick-row-' + r">
+        <div class="brick-track">
+          <div v-for="copy in 6" :key="copy" class="brick-set" :aria-hidden="copy > 3">
+            <span v-for="(skill, i) in row" :key="i" class="brick">{{ skill }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Секция 7: Футер -->
     <footer class="footer">
       <div class="footer-content">

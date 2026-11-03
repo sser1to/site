@@ -71,7 +71,21 @@ const TRANSLATIONS = {
     close: 'Закрыть',
     adTitle: 'У меня есть личный тгк канал',
     footerName: 'Лецколюк<br>Никита<br>Максимович',
-    footerContacts: 'Мои контакты'
+    footerContacts: 'Мои контакты',
+    skillList: [
+      'аналитическое мышление',
+      'пунктуальность',
+      'ответственность',
+      'работа в команде',
+      'внимание к деталям',
+      'декомпозиция задач',
+      'критическое мышление',
+      'тайм-менеджмент',
+      'стрессоустойчивость',
+      'коммуникабельность',
+      'быстрая обучаемость',
+      'самостоятельность'
+    ]
   },
   en: {
     siteTitle: 'About Me',
@@ -121,7 +135,21 @@ const TRANSLATIONS = {
     close: 'Close',
     adTitle: 'I have a personal Telegram channel',
     footerName: 'Letskolyuk<br>Nikita<br>Maximovich',
-    footerContacts: 'My contacts'
+    footerContacts: 'My contacts',
+    skillList: [
+      'analytical thinking',
+      'punctuality',
+      'responsibility',
+      'teamwork',
+      'attention to detail',
+      'task decomposition',
+      'critical thinking',
+      'time management',
+      'stress tolerance',
+      'communication',
+      'fast learning',
+      'self-reliance'
+    ]
   }
 };
 
@@ -162,6 +190,17 @@ createApp({
     }, { immediate: true });
 
     const currentSlide = ref(0);
+
+    // ===== Skills brick wall: split the list into 3 rows =====
+    const skillRows = computed(() => {
+      const list = TRANSLATIONS[lang.value].skillList || [];
+      const per = Math.ceil(list.length / 3);
+      return [
+        list.slice(0, per),
+        list.slice(per, per * 2),
+        list.slice(per * 2)
+      ];
+    });
 
     const slides = ref([
       { src: 'src/img/design1.png' },
@@ -1003,6 +1042,7 @@ createApp({
     return {
       lang,
       t,
+      skillRows,
       currentSlide,
       slides,
       nextSlide,

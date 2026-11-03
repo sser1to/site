@@ -318,7 +318,9 @@ html.preloading body {
 .section-divider {
   height: 1px;
   background: var(--divider);
+  /* тянет линию от контента до правого края экрана */
   margin: 28px 0 44px;
+  margin-right: calc(50% - 10vw);
   transform: scaleX(0);
   transform-origin: left;
 }
@@ -1472,6 +1474,91 @@ html.sber-mode {
   to { transform: translateX(-50%); }
 }
 
+/* ===== SKILLS BRICK WALL ===== */
+.brick-wall {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  cursor: default;
+  padding: 18px 0;
+  transition: background 0.25s ease;
+}
+
+.brick-row {
+  display: flex;
+  overflow: hidden;
+  padding: 5px 0;
+}
+
+/* stagger joints like real brickwork */
+.brick-row:nth-child(2) {
+  margin-left: -48px;
+}
+
+.brick-row:nth-child(3) {
+  margin-left: -24px;
+}
+
+.brick-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.brick-row-0 .brick-track {
+  animation: brick-marquee-right 55s linear infinite;
+}
+
+.brick-row-1 .brick-track {
+  animation: brick-marquee-left 75s linear infinite;
+}
+
+.brick-row-2 .brick-track {
+  animation: brick-marquee-right 125s linear infinite;
+}
+
+/* pause the traffic on hover */
+.brick-row:hover .brick-track {
+  animation-play-state: paused;
+}
+
+@keyframes brick-marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes brick-marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.brick-set {
+  display: flex;
+  gap: 10px;
+  padding-right: 10px;
+}
+
+.brick {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 13px 22px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: color 0.25s, border-color 0.25s;
+}
+
+.brick:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 /* ===== TELEGRAM AD MODAL ===== */
 .ad-wrap {
   position: fixed;
@@ -1632,6 +1719,11 @@ html.dark .ad-card {
     flex-direction: column;
     gap: 40px;
   }
+
+  .brick {
+    font-size: 12px;
+    padding: 11px 18px;
+  }
 }
 
 /* ===== SMALL PHONES (<= 480px) ===== */
@@ -1756,5 +1848,10 @@ html.dark .ad-card {
   .track-item {
     padding: 10px 12px;
     font-size: 13px;
+  }
+
+  .brick {
+    font-size: 11px;
+    padding: 9px 14px;
   }
 }
