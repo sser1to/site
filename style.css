@@ -486,6 +486,8 @@ html.preloading body {
 }
 
 .timeline-dot {
+  position: relative;
+  z-index: 1;
   flex-shrink: 0;
   width: 13px;
   height: 13px;
@@ -493,6 +495,8 @@ html.preloading body {
   border-radius: 4px;
   background: var(--bg);
   border: 3px solid var(--accent);
+  /* маска вокруг точки: перекрывает линию рядом с ней, чтобы не было стыка */
+  box-shadow: 0 0 0 6px var(--surface);
 }
 
 .timeline-period {
@@ -949,9 +953,12 @@ html.dark .terminal-card {
   left: 0;
   z-index: 960;
   height: 2px;
-  width: var(--scroll-progress, 0%);
+  width: 100%;
+  /* scaleX вместо изменения width: не вызывает layout каждый скролл-событие */
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: left top;
   background: var(--accent);
-  transition: width 0.2s linear;
+  transition: transform 0.2s linear;
 }
 
 body.lightbox-open .scroll-progress,
@@ -1447,6 +1454,9 @@ html.sber-mode {
   width: max-content;
   animation: watermark-marquee 45s linear infinite;
   will-change: transform;
+  /* подсказка WebView/WebKit держать слой на композиторе */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .footer-watermark-track span {
@@ -1807,6 +1817,13 @@ html.dark .ad-card {
 
   .footer-watermark-track span {
     font-size: 16px;
+  }
+
+  /* прячем лишние копии: слой композитора вдвое меньше,
+     внутри каждой половины остаются одинаковые 6 спанов — бесшовный цикл -50% сохраняется */
+  .footer-watermark-track span:nth-child(n + 7):nth-child(-n + 12),
+  .footer-watermark-track span:nth-child(n + 19):nth-child(-n + 24) {
+    display: none;
   }
 
   .ad-wrap {

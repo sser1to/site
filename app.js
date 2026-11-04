@@ -24,7 +24,7 @@ function pointerMid(a, b) {
 
 const TRANSLATIONS = {
   ru: {
-    siteTitle: 'Обо мне',
+    siteTitle: 'Никита Лецколюк',
     init: 'Инициализация',
     themeAria: 'Переключить тему',
     progressAria: 'Прогресс чтения страницы',
@@ -88,7 +88,7 @@ const TRANSLATIONS = {
     ]
   },
   en: {
-    siteTitle: 'About Me',
+    siteTitle: 'Nikita Letskolyuk',
     init: 'Initializing',
     themeAria: 'Toggle theme',
     progressAria: 'Page reading progress',
@@ -1191,7 +1191,7 @@ function updateScrollProgress() {
   const doc = document.documentElement;
   const max = doc.scrollHeight - window.innerHeight;
   const pct = max > 0 ? clamp(Math.round((window.scrollY / max) * 100), 0, 100) : 0;
-  scrollProgress.style.setProperty('--scroll-progress', pct + '%');
+  scrollProgress.style.setProperty('--scroll-progress', pct / 100);
 }
 
 window.addEventListener('scroll', updateScrollProgress, { passive: true });
